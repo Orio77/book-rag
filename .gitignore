@@ -32,3 +32,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Logging ###
+logs/
+*.log
+*.log.*
+*.log.gz

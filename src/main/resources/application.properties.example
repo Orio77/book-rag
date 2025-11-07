@@ -4,3 +4,19 @@ spring.main.web-application-type=none
 
 spring.ai.vectorstore.pinecone.apiKey=your_pinecone_api_key
 spring.ai.vectorstore.pinecone.index-name=your_pinecone_index_name
+
+# Logging configuration - File only logging
+logging.level.root=INFO
+logging.level.com.orio77.book_rag=DEBUG
+logging.level.org.springframework.ai=INFO
+
+# Disable console logging completely
+logging.pattern.console=
+logging.group.web=org.springframework.core.codec,org.springframework.http,org.springframework.web
+
+# File logging configuration (backup to logback-spring.xml)
+logging.file.path=logs
+logging.file.name=logs/book-rag-app.log
+
+# Logback configuration file
+logging.config=classpath:logback-spring.xml
