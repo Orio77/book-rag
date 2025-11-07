@@ -1,0 +1,6 @@
+spring.application.name=book-rag
+
+spring.main.web-application-type=none
+
+spring.ai.vectorstore.pinecone.apiKey=your_pinecone_api_key
+spring.ai.vectorstore.pinecone.index-name=your_pinecone_index_name
