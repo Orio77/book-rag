@@ -1,13 +1,12 @@
-package com.orio77.book_rag;
+package com.orio77.book_rag.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-@Service
-public class InitService {
+import lombok.extern.slf4j.Slf4j;
 
-    private static final Logger logger = LoggerFactory.getLogger(InitService.class);
+@Service
+@Slf4j
+public class InitService {
 
     public void init() {
         // init: load all books, process them into vectors, and store in the pinecone
@@ -19,21 +18,21 @@ public class InitService {
 
     private void loadBooks() {
         // Load books from source
-        logger.info("Loading books");
+        log.info("Loading books");
     }
 
     private void createDocuments() {
         // Create documents from books
-        logger.info("Creating documents from books");
+        log.info("Creating documents from books");
     }
 
     private void embedBooks() {
         // Process books into vectors
-        logger.info("Embedding books into vectors");
+        log.info("Embedding books into vectors");
     }
 
     private void upsertToPinecone() {
         // Store vectors in Pinecone vector database
-        logger.info("Upserting vectors to Pinecone");
+        log.info("Upserting vectors to Pinecone");
     }
 }

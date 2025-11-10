@@ -1,9 +1,15 @@
 spring.application.name=book-rag
-
 spring.main.web-application-type=none
+spring.main.banner-mode=off
+
+spring.ai.mcp.server.name=book-rag-mcp-server
+spring.ai.mcp.server.version=0.0.1
+
 
 spring.ai.vectorstore.pinecone.apiKey=your_pinecone_api_key
 spring.ai.vectorstore.pinecone.index-name=your_pinecone_index_name
+
+orio.book-rag.books-path=src/main/resources/books/
 
 # Logging configuration - File only logging
 logging.level.root=INFO
