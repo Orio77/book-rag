@@ -11,11 +11,15 @@ import org.springframework.ai.vectorstore.filter.Filter.Expression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.google.common.collect.Lists;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
 public class VectorStoreService {
+
+    private static final int batchSize = 50;
 
     @Autowired
     private VectorStore vectorStore;
@@ -23,27 +27,15 @@ public class VectorStoreService {
     public void upsertDocuments(List<Document> docs) {
         log.info("Upserting {} documents", docs.size());
 
-        // Batch size to stay under Pinecone's 4MB limit
-        int batchSize = 50; // Conservative batch size to avoid hitting the limit
+        // Split documents into batches
+        List<List<Document>> batches = Lists.partition(docs, batchSize);
+        log.info("Split documents into {} batches", batches.size());
 
-        for (int i = 0; i < docs.size(); i += batchSize) {
-            int endIndex = Math.min(i + batchSize, docs.size());
-            List<Document> batch = docs.subList(i, endIndex);
-
-            log.info("Upserting batch {} of {} documents (documents {}-{})",
-                    (i / batchSize) + 1,
-                    (docs.size() + batchSize - 1) / batchSize,
-                    i + 1,
-                    endIndex);
-
-            try {
-                vectorStore.add(batch);
-                log.info("Successfully upserted batch of {} documents", batch.size());
-            } catch (Exception e) {
-                log.error("Failed to upsert batch {}-{}: {}", i + 1, endIndex, e.getMessage());
-                throw e;
-            }
-        }
+        // Upsert each batch into the vector store
+        batches.stream().forEach(batch -> {
+            vectorStore.add(batch);
+            log.info("Upserted batch of {} documents", batch.size());
+        });
 
         log.info("Successfully upserted all {} documents in batches", docs.size());
     }
@@ -67,6 +59,9 @@ public class VectorStoreService {
             List<Document> allDocs = vectorStore.similaritySearch(
                     SearchRequest.builder().query("").topK(10000).build());
 
+            log.info("Found {} documents to delete", allDocs.size());
+
+            // Delete documents by their IDs
             if (!allDocs.isEmpty()) {
                 List<String> docIds = allDocs.stream()
                         .map(Document::getId)
@@ -113,6 +108,7 @@ public class VectorStoreService {
 
     public boolean hasDocuments() {
         try {
+            // Perform a test search to check if any documents exist
             List<Document> test = vectorStore.similaritySearch(
                     SearchRequest.builder().query("test").topK(1).build());
             return !test.isEmpty();
